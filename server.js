@@ -4,10 +4,16 @@ var app = express();
 var userRoute = require('./routes/userRoute');
 var workRoute = require('./routes/workRoute');
 
-
-
 var port = 3000 || proccess.env.PORT;
 var host = 'localhost';
+
+var myLogger = function (req, res, next) {
+    let d = new Date();
+    console.log(`${d.getHours()}:${d.getMinutes()} ${req.method} request to ${req.path}`)
+    next()
+} 
+
+app.use(myLogger);
 
 app.get('/', function(req, res){
     res.json({hello: 'world'});
