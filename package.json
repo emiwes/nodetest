@@ -1,0 +1,19 @@
+{
+  "name": "noderest",
+  "version": "1.0.0",
+  "description": "testing node and express",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mongoDB",
+    "node",
+    "express"
+  ],
+  "author": "Emil Westin",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
