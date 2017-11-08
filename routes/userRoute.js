@@ -1,34 +1,23 @@
 var express = require('express');
 var router = express.Router();
-var mongoose = require('mongoose');
-
-const userService = require('../services/userService');
-
-const User = mongoose.model('User', { 
-    name: String 
-});
-
+var User = require('../models/user');
+const mongoService = require('../services/mongoService');
 
 router.route('/user')    
     .get(function(req, res){
         res.send('getting user');
     })
 
-    .post(function(req, res){
-        
+    .post(function(req, res, next){
         let user = new User({ 
-            "name": req.body.name 
+            "name": req.body.name,
+            "age": req.body.age
         });
+        mongoService.saveUser(user, req, res, next);
 
-        user.save(function (err) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('meow');
-          }
-        });
-
-        res.send('posting user');
+    }, function(req, res){
+        console.log(req.user);
+        res.json(req.user);
     })
 
     .put(function(req, res){
@@ -40,20 +29,15 @@ router.route('/user')
     });
 
     router.route('/user/:id')
-        .get(function(req, res){
-            // res.json({'result' : userService.multiplyUserId(req.params.id, 2)});
-
-            User.findById(req.params.id, function(err, user){
-                if (err) {
-                    console.log(err);
-                }
-
-                res.json(user);
-            });
+        .get(function(req, res, next){
+            mongoService.findById(User, req, res, next);
+        }, function(req, res, next){
+            let found = req.model;
+            res.json(found);
         })
+        
 
         .put(function(req, res){
-
             let newName = {
                 "name": req.body.name
             }
@@ -64,8 +48,7 @@ router.route('/user')
                 }
 
                 res.json(user);
-
             });
         });
 
- module.exports = router;
+module.exports = router;
