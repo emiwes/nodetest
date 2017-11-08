@@ -4,21 +4,18 @@ var User = require('../models/user');
 const mongoService = require('../services/mongoService');
 
 router.route('/user')    
-    .get(function(req, res){
-        res.send('getting user');
-    })
+    .get(function(req, res, next){
+        mongoService.findAll(User, req, res, next);
+    }, sendResponseAsJson)
 
     .post(function(req, res, next){
+        console.log("saving model")
         let user = new User({ 
             "name": req.body.name,
             "age": req.body.age
         });
-        mongoService.saveUser(user, req, res, next);
-
-    }, function(req, res){
-        console.log(req.user);
-        res.json(req.user);
-    })
+        mongoService.saveModel(user, req, res, next);
+    }, sendResponseAsJson)
 
     .put(function(req, res){
         res.send('updating user');
@@ -31,10 +28,7 @@ router.route('/user')
     router.route('/user/:id')
         .get(function(req, res, next){
             mongoService.findById(User, req, res, next);
-        }, function(req, res, next){
-            let found = req.model;
-            res.json(found);
-        })
+        }, sendResponseAsJson)
         
 
         .put(function(req, res){
@@ -50,5 +44,9 @@ router.route('/user')
                 res.json(user);
             });
         });
+
+function sendResponseAsJson(req, res){
+    res.json(res.locals);
+}
 
 module.exports = router;
